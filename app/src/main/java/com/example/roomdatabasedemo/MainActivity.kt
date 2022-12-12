@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roomdatabasedemo.db.Student
@@ -73,7 +74,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun initRecyclerView() {
       studentRecyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = StudentRecyclerViewAdapter()
+        adapter = StudentRecyclerViewAdapter{
+            selectedItem:Student -> listItemClicked(selectedItem)
+        }
         studentRecyclerView.adapter = adapter
         displayStudentList()
 
@@ -85,5 +88,8 @@ class MainActivity : AppCompatActivity() {
               adapter.notifyDataSetChanged()
          })
 
+    }
+    private fun listItemClicked(student: Student){
+       Toast.makeText(this,"${student.name} is clicked",Toast.LENGTH_SHORT).show()
     }
 }

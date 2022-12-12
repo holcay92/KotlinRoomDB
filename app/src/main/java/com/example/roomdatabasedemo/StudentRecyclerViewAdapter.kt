@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roomdatabasedemo.db.Student
 
-class StudentRecyclerViewAdapter() :RecyclerView.Adapter<StudentViewHolder>(){
+class StudentRecyclerViewAdapter(private val clickListener: (Student) -> Unit) :RecyclerView.Adapter<StudentViewHolder>(){
 
     private val studentList= arrayListOf<Student>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
@@ -17,7 +17,7 @@ class StudentRecyclerViewAdapter() :RecyclerView.Adapter<StudentViewHolder>(){
     }
 
     override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
-       return holder.bind(studentList[position])
+       return holder.bind(studentList[position],clickListener)
     }
 
     override fun getItemCount(): Int {
