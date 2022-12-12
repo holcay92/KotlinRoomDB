@@ -32,4 +32,3 @@ class StudentRecyclerViewAdapter() :RecyclerView.Adapter<StudentViewHolder>(){
     }
 
 }
-}
