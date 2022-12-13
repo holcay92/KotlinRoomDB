@@ -58,9 +58,7 @@ class MainActivity : AppCompatActivity() {
                 clearInput()
             }
         }
-
         initRecyclerView()
-
     }
 
     private fun saveStudentData() {
