@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View.inflate
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.roomdatabasedemo.databinding.ListItemBinding
 import com.example.roomdatabasedemo.db.Student
 
 class StudentRecyclerViewAdapter(private val clickListener: (Student) -> Unit) :RecyclerView.Adapter<StudentViewHolder>(){
@@ -11,9 +12,8 @@ class StudentRecyclerViewAdapter(private val clickListener: (Student) -> Unit) :
     private val studentList= arrayListOf<Student>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
         //layout object is created
-       val layoutInflater = LayoutInflater.from(parent.context)
-        val listItem = layoutInflater.inflate(R.layout.list_item,parent,false)
-        return StudentViewHolder(listItem)
+     val bindingItem = ListItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return StudentViewHolder(bindingItem)
     }
 
     override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
@@ -30,5 +30,4 @@ class StudentRecyclerViewAdapter(private val clickListener: (Student) -> Unit) :
         studentList.clear()
         studentList.addAll(list)
     }
-
 }
