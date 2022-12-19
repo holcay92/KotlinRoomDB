@@ -1,5 +1,6 @@
 package com.example.roomdatabasedemo
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -120,11 +121,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun displayStudentList() {
-        viewModel.students.observe(this, {
+        viewModel.students.observe(this) {
             adapter.setList(it)
             adapter.notifyDataSetChanged()
-        })
+        }
 
     }
 
