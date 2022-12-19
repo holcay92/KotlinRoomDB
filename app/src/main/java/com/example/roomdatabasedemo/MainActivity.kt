@@ -8,17 +8,14 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.roomdatabasedemo.databinding.ActivityMainBinding
 import com.example.roomdatabasedemo.db.Student
 import com.example.roomdatabasedemo.db.StudentDatabase
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var nameEditText: EditText
-    private lateinit var emailEditText: EditText
-    private lateinit var saveButton: Button
-    private lateinit var clearButton: Button
-
+    // we have to rebuild the project after adding the binding feature to the project dependencies!!
+    private lateinit var bindingMain: ActivityMainBinding
     private lateinit var viewModel: StudentViewModel
-    private lateinit var studentRecyclerView: RecyclerView
     private lateinit var adapter: StudentRecyclerViewAdapter
     private var isListItemSelected = false
 
@@ -26,13 +23,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        nameEditText = findViewById(R.id.etName)
-        emailEditText = findViewById(R.id.etEmail)
-        saveButton = findViewById(R.id.btnSave)
-        clearButton = findViewById(R.id.btnClear)
-        studentRecyclerView = findViewById(R.id.rvItem)
+        bindingMain = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(bindingMain.root)
+
+        bindingMain
 
 
         // dao instance is created
@@ -42,24 +37,28 @@ class MainActivity : AppCompatActivity() {
         // initializing the view model
         viewModel = factory.create(StudentViewModel::class.java)
 
-        saveButton.setOnClickListener {
-            if (isListItemSelected) {
-               updateStudentData()
-                clearInput()
-            } else {
-                saveStudentData()
-                clearInput()
+        // apply is used for both buttons to avoid repeating the same code
+        bindingMain.apply {
+            btnSave.setOnClickListener {
+                if (isListItemSelected) {
+                    updateStudentData()
+                    clearInput()
+                } else {
+                    saveStudentData()
+                    clearInput()
+                }
             }
-        }
-        clearButton.setOnClickListener {
-            if (isListItemSelected) {
-                deleteStudentData()
-                clearInput()
-            } else {
-                clearInput()
+
+            btnClear.setOnClickListener {
+                if (isListItemSelected) {
+                    deleteStudentData()
+                    clearInput()
+                } else {
+                    clearInput()
+                }
             }
+            initRecyclerView()
         }
-        initRecyclerView()
     }
 
     private fun saveStudentData() {
@@ -71,53 +70,70 @@ class MainActivity : AppCompatActivity() {
           viewModel.insertStudent(student)*/
 
         //this is the same as above
-        viewModel.insertStudent(
-            Student(
-                0,
-                nameEditText.text.toString(),
-                emailEditText.text.toString()
+        bindingMain.apply {
+            viewModel.insertStudent(
+                Student(
+                    0,
+                    etName.text.toString(),
+                    etEmail.text.toString()
+                )
             )
-        )
+        }
+
     }
 
     private fun updateStudentData() {
-        viewModel.updateStudent(
-            Student(
-                selectedStudent.id,
-                nameEditText.text.toString(),
-                emailEditText.text.toString()
+
+        bindingMain.apply {
+            viewModel.updateStudent(
+                Student(
+                    selectedStudent.id,
+                    etName.text.toString(),
+                    etEmail.text.toString()
+                )
             )
-        )
-        saveButton.text = "Save"
-        clearButton.text = "Clear"
-        isListItemSelected = false
+            btnSave.text = "Save"
+            btnClear.text = "Clear"
+            isListItemSelected = false
+        }
+
     }
 
     private fun deleteStudentData() {
-        viewModel.deleteStudent(
-            Student(
-                selectedStudent.id,
-                nameEditText.text.toString(),
-                emailEditText.text.toString()
+
+        bindingMain.apply {
+            viewModel.deleteStudent(
+                Student(
+                    selectedStudent.id,
+                    etName.text.toString(),
+                    etEmail.text.toString()
+                )
             )
-        )
-        saveButton.text = "Save"
-        clearButton.text = "Clear"
-        isListItemSelected = false
+            btnSave.text = "Save"
+            btnClear.text = "Clear"
+            isListItemSelected = false
+        }
+
     }
 
     private fun clearInput() {
-        nameEditText.setText("")
-        emailEditText.setText("")
+        bindingMain.apply {
+            etName.setText("")
+            etEmail.setText("")
+        }
+
     }
 
     private fun initRecyclerView() {
-        studentRecyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = StudentRecyclerViewAdapter { selectedItem: Student ->
-            listItemClicked(selectedItem)
+        bindingMain.apply {
+            rvItem.layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = StudentRecyclerViewAdapter { selectedItem: Student ->
+                listItemClicked(selectedItem)
+            }
+            rvItem.adapter = adapter
+            displayStudentList()
         }
-        studentRecyclerView.adapter = adapter
-        displayStudentList()
+
 
     }
 
@@ -134,12 +150,13 @@ class MainActivity : AppCompatActivity() {
 /*
        Toast.makeText(this,"${student.name} is clicked",Toast.LENGTH_SHORT).show()
 */
-        selectedStudent = student
-        saveButton.text = "Update"
-        clearButton.text = "Delete"
-        isListItemSelected = true
-        nameEditText.setText(selectedStudent.name)
-        emailEditText.setText(selectedStudent.email)
-
+        bindingMain.apply{
+            selectedStudent = student
+            btnSave.text = "Update"
+            btnClear.text = "Delete"
+            isListItemSelected = true
+            etName.setText(selectedStudent.name)
+            etEmail.setText(selectedStudent.email)
+        }
     }
 }
